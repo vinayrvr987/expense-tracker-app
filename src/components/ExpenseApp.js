@@ -6,13 +6,16 @@ import { useState } from 'react';
 
 const ExpenseApp = () => {
     const [totalValue, computeValue] = useState(4000);
+    const addExpense = (newValue) => {
+        computeValue(oldState => Number(oldState) + Number(newValue))
+    }
     return (
         <div className="wrapper">
             <div className="phone">
                 <img src={phone} alt="phone" className="phone-image" />
                 <div className="app-body">
                     < Summary value={totalValue} />
-                    < ListExpense />
+                    < ListExpense addExpense={addExpense} />
                 </div>
             </div>
         </div>

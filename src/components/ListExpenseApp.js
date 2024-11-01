@@ -16,30 +16,46 @@ const Item = ({ item }) => {
 const ItemList = ({ data }) => {
     return (
         <div className="item-list">
-            {data.map((item, index) => (
-                <Item key={index} item={item} />
+            {data.map((item) => (
+                <Item item={item} />
             ))}
         </div>
     );
 };
 
-const Form = () => {
+const Form = ({ onAdd }) => {
+    const [expenseDetail, setExpenseDetail] = useState({
+        name: '',
+        price: ''
+    });
+
+    const handleForm = (type) => (event) => {
+        setExpenseDetail((oldState) => ({
+            ...oldState,
+            [type]: event.target.value
+        }))
+    };
+
+    const handleAdd = () => {
+        onAdd(expenseDetail);
+    };
+
     return (
         <div className="form">
             <div>
                 <label>Name</label>
-                <input />
+                <input value={expenseDetail.name} onChange={handleForm('name')} />
             </div>
             <div>
                 <label>Price</label>
-                <input />
+                <input value={expenseDetail.price} onChange={handleForm('price')} />
             </div>
-            <button>Add Expense</button>
+            <button onClick={handleAdd}>Add Expense</button>
         </div>
     );
 };
 
-const ListExpense = () => {
+const ListExpense = ({ addExpense }) => {
     const [isFormVisible, toggleFormVisibility] = useState(false);
     const [list, setList] = useState([
         { title: "Food Expense", date: "08/01/2022", price: "200" },
@@ -52,13 +68,19 @@ const ListExpense = () => {
         toggleFormVisibility(prev => !prev);
     };
 
+    const handleAdd = (newValue) => {
+        setList((oldState) => [{ title: newValue.name, price: newValue.price, date: '10/10/2024' }, ...oldState]);
+        addExpense(newValue.price);
+        handleToggle();
+    }
+
     return (
         <div className="List">
             <div className="heading">
                 All Expense
                 <button onClick={handleToggle}>{isFormVisible ? "-" : "+"}</button>
             </div>
-            {isFormVisible ? <Form /> : <ItemList data={list} />}
+            {isFormVisible ? <Form onAdd={handleAdd} /> : <ItemList data={list} />}
         </div>
     );
 };
